@@ -269,6 +269,18 @@ export function providerDisplayName(providerID) {
   return providerID;
 }
 
+/** Load MCP servers (GET /api/mcp) into the store for the MCP sheet and status dots. */
+export async function fetchMcpServers(api) {
+  try {
+    const res = await api.mcp();
+    const servers = res?.data ?? res?.servers ?? [];
+    store.set({ mcpServers: Array.isArray(servers) ? servers : [] });
+  } catch {
+    /* keep the last known list — the sheet shows a real error there if needed */
+    if (!Array.isArray(store.state.mcpServers)) store.set({ mcpServers: [] });
+  }
+}
+
 async function pollConnected(providerID, api, tries = 24) {
   for (let i = 0; i < tries; i++) {
     try {

@@ -16,6 +16,10 @@ mkdir -p "$OUT/debug" "$OUT/release" "$OUT/playstore" "$ROOT/dist/meta"
 node scripts/prepare-android.mjs
 npx cap sync android >/dev/null
 
+# 1b. packaging gate — refuse release builds with unstamped/dev config
+echo "== packaging gate =="
+node scripts/verify-android-config.mjs
+
 # 2. builds — default: android/gradlew (downloads Gradle once on first run).
 # Override for offline/cached environments, e.g.:
 #   GRADLE_BIN=/opt/gradle/bin/gradle GRADLE_ARGS="-g /path/to/gradle-home" bash scripts/package-android.sh

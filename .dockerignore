@@ -1,0 +1,17 @@
+node_modules/
+dist/
+android/
+www/
+.git/
+.gitignore
+assets/
+docs/
+*.log
+*.md
+mobcode.server.json
+mobcode.server.json.example
+server.env.example
+.env
+.dockerignore
+Dockerfile
+render.yaml

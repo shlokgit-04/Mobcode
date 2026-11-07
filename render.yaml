@@ -1,0 +1,38 @@
+# Render blueprint — Mobcode (web service, FREE plan)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Secrets (ENGINE_PASSWORD, provider API keys) must be created in the Render
+# dashboard — never commit them here.
+services:
+  - type: web
+    name: mobcode
+    runtime: docker
+    plan: free
+    region: oregon
+    autoDeploy: true
+    healthCheckPath: /health/keepalive
+    # Free plan facts (honest constraints, see DEPLOYMENT.md):
+    #   - 512 MB RAM / 0.1 CPU per instance
+    #   - spins down after ~15 min without traffic; next request cold-starts (50s+)
+    #   - ephemeral filesystem — workspace resets on redeploy/restart
+    #   - keep the service alive only with an EXTERNAL monitor on /health/keepalive
+    #     (750 free instance-hours/month: ONE web service fits comfortably)
+    envVars:
+      - key: ENGINE_PORT
+        value: "46000"
+      - key: ENGINE_HOST
+        value: "127.0.0.1"
+      - key: MOBCODE_WORKSPACE
+        value: /app/workspace
+      # optional boot-time clone (DEPLOYMENT.md §5):
+      - key: MOBCODE_WORKSPACE_GIT
+        sync: false          # public repo URL — omit to start with an empty workspace
+      - key: MOBCODE_WORKSPACE_GIT_TOKEN
+        sync: false          # private PAT — never commit; set only if the repo is private
+      - key: ENGINE_PASSWORD
+        sync: false          # set in dashboard — engine auth (loopback only)
+      # Provider keys — the engine consumes these directly:
+      - key: ANTHROPIC_API_KEY
+        sync: false          # optional — set if you use Anthropic models
+      - key: OPENAI_API_KEY
+        sync: false          # optional — set if you use OpenAI models

@@ -1,6 +1,6 @@
-# Mobcode Privacy Policy (draft — v1.0)
+# Mobcode Privacy Policy (draft — v1.1)
 
-_Last updated: 2026-11-01. This draft says **only** what Mobcode verifiably does.
+_Last updated: 2026-11-08. This draft says **only** what Mobcode verifiably does.
 Nothing in this document is a marketing claim._
 
 ## What Mobcode is
@@ -8,9 +8,9 @@ Nothing in this document is a marketing claim._
 Mobcode ("the app") is a mobile client for **your own** OpenCode installation.
 The app itself contains no user accounts, no analytics, no ads, and no
 third-party tracking SDKs. It connects to a backend that **you** operate (the
-"Mbackend" — e.g. your Render deployment of the Mobcode companion server),
-which then talks to an OpenCode engine and from there to the AI providers you
-configured on **that** server.
+"Mobcode backend" — e.g. your Render deployment of the Mobcode companion
+server), which then talks to an OpenCode engine and from there to the AI
+providers you configured on **that** server.
 
 ## Data the app processes
 
@@ -34,6 +34,27 @@ configured on **that** server.
 Provider API keys / OAuth tokens are entered through **your OpenCode server's
 own flows** and stored **on the backend machine** (OpenCode's own credential
 store). The app never receives, displays, or stores them.
+
+## V1.1 additions (multi-backend era)
+
+The app now distinguishes three backend modes; the data story is the same in
+each, but the "where" changes:
+
+| Mode | Where the backend runs | Credential handling |
+|---|---|---|
+| PWA + companion proxy (browser) | your machine / your Render free-tier service | proxy injects engine Basic auth; clients send no password |
+| Android release build (production URL stamped) | the deployment named **in the app config** | encrypted native store holds only the backend URL (+ optional password) |
+| Dev/advanced native build | any URL you enter (Connect screen) | encrypted native store |
+
+* File attachments (v1.1) are uploaded by the app to the workspace of the
+  backend via `POST /api/experimental/fs/write`; the file bytes go app → your
+  backend → workspace path → engine prompt. No third-party receives them.
+* Health endpoints (`/health`, `/health/keepalive`) are public on the backend
+  by design and expose **no user data** — only `ok`, version, uptime and
+  process metadata.
+* `ENGINE_PASSWORD` and provider keys never leave the backend machine: the
+  companion holds and injects them; the app binary contains none (verified
+  by the packaged-asset scan; see `scripts/verify-android-config.mjs`).
 
 ## Your backend's own handling
 

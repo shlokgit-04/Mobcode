@@ -91,6 +91,21 @@ export class MobcodeApi {
   }
 
   async request(method, path, body, params, opts = {}) {
+    if (opts.rawBody !== undefined) {
+      const url0 = this.url(path, params);
+      const res = await fetch(url0, {
+        method,
+        headers: { ...(opts.contentType ? { "Content-Type": opts.contentType } : {}), ...this.headers() },
+        body: opts.rawBody,
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        let message = res.statusText || "Request failed";
+        try { message = (await res.json())?.message || message; } catch {}
+        throw new OpenCodeError(message, res.status, null);
+      }
+      try { return await res.json(); } catch { return undefined; }
+    }
     const res = await fetch(this.url(path, params), {
       method,
       headers: this.headers(body !== undefined ? { "Content-Type": "application/json" } : {}),
@@ -206,6 +221,8 @@ export class MobcodeApi {
 
   /** App config documents (v2 /api/config; v1 returns the {json} doc). */
   getConfig() { return this.get("/api/config"); }
+
+  mcp() { return this.get("/api/mcp", emptyOverride(null, this)); }
 
   listAgents() { return this.get("/api/agent"); }
 

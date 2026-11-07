@@ -1,6 +1,6 @@
 {
   "name": "mobcode",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Mobcode — a mobile client for OpenCode. Dynamic model catalogue, sessions, and provider management through the connected OpenCode server.",
   "type": "module",

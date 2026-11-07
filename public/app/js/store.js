@@ -25,6 +25,8 @@ export const store = new (class {
       providers: [],         // from /api/provider (configured providers)
       integrations: [],      // from /api/integration (connect methods per provider)
       credentials: [],       // from /api/credential (stored credentials)
+      mcpServers: [],        // from /api/mcp
+      projects: [],          // from /api/project
       connectedProviderIds: [],
       globalDefaultModel: null, // provider/id from /api/model/default
 
@@ -34,9 +36,13 @@ export const store = new (class {
       activeSessionId: null,
       sessionCache: new Map(), // sessionID -> SessionV2Info
       messageCache: new Map(), // sessionID -> [messages]
+      currentProjectId: "",    // selected project on home/projects
 
       sseStatus: "init",     // init|connected|disconnected|error
       authMode: "bearer",    // bearer | basic (direct engine connections)
+
+      // theme: "dark" | "light" (dark default)
+      theme: saved.theme ?? "dark",
 
       // model picker ui state
       modelQuery: "",
@@ -45,6 +51,9 @@ export const store = new (class {
       recents: saved.recents ?? [],         // [ModelRef-ish {providerID,id,variant?,at,name,providerName}]
       variantChoice: {},       // modelKey -> variant id
       agentsChoice: null,
+
+      // activity feed (SSE-derived, real events only)
+      activityLog: [],         // [{at, kind, sessionId, label, detail, status}]
     };
     this.subs = new Set();
   }
@@ -65,9 +74,22 @@ export const store = new (class {
         JSON.stringify({
           recents: this.state.recents.slice(0, 8),
           directory: this.state.directory,
+          theme: this.state.theme,
         })
       );
     } catch {}
+  }
+
+  setTheme(theme) {
+    const t = theme === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = t;
+    this.set({ theme: t });
+    this.persistPrefs();
+  }
+
+  logActivity(entry) {
+    const log = [entry, ...this.state.activityLog].slice(0, 400);
+    this.set({ activityLog: log });
   }
 
   rememberModel(ref, label) {
@@ -91,3 +113,6 @@ export function modelKey(ref) {
 export function modelBaseKey(ref) {
   return ref ? `${ref.providerID}/${ref.id}`.toLowerCase() : "";
 }
+
+/** Build-time config (production URL etc.) */
+export const config = {};

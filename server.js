@@ -62,6 +62,10 @@ let state = {
   password: "",
 };
 
+// platform metadata for /health (no secrets)
+const STARTED_AT = Date.now();
+const VERSION = "1.1.0";
+
 // 1) defaults from flags/env
 const flagTarget = arg("target", "") || arg("open", "") || "";
 if (typeof flagTarget === "string") applyTarget(flagTarget, true);
@@ -189,7 +193,7 @@ function publicConfig() {
     directory: state.directory || "",
     hasPassword: Boolean(state.password),
     staticOnly: Boolean(STATIC_ONLY),
-    version: "1.0.0",
+    version: VERSION,
   };
 }
 
@@ -408,6 +412,31 @@ const server = createServer(async (req, res) => {
     state.target = "";
     persist();
     return send(res, 200, publicConfig());
+  }
+
+  // -- health: availability probe. Always answers while this process is alive.
+  //    Never calls the OpenCode engine (cheap: no upstream traffic), never
+  //    returns secrets — safe to expose publicly for uptime monitors.
+  if (url.pathname === "/health" && (req.method === "GET" || req.method === "HEAD")) {
+    return send(res, 200, {
+      service: "mobcode",
+      ok: true,
+      version: VERSION,
+      startedAt: new Date(STARTED_AT).toISOString(),
+      uptime: Math.floor((Date.now() - STARTED_AT) / 1000),
+      uptimeReadable: `${Math.floor((Date.now() - STARTED_AT) / 3600000)}h ${Math.floor(((Date.now() - STARTED_AT) % 3600000) / 60000)}m`,
+      engineConnected: Boolean(state.target),
+      anonymous: !Boolean(state.target),
+      memoryRssBytes: process.memoryUsage().rss,
+      node: process.version,
+    }, { "cache-control": "no-store" });
+  }
+
+  // -- keepalive: ultra-cheap liveness ping for EXTERNAL monitors (e.g. cron-job.org).
+  //    Always 200 while the server core is running; no state, no I/O, no secrets.
+  //    (The server does NOT self-ping: an external monitor keeps Render awake.)
+  if (url.pathname === "/health/keepalive" && (req.method === "GET" || req.method === "HEAD")) {
+    return send(res, 200, { ok: true, ts: Date.now() }, { "cache-control": "no-store" });
   }
 
   if (shouldProxy(url.pathname)) {
