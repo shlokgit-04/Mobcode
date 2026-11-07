@@ -1,0 +1,32 @@
+{
+  "name": "mobcode",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobcode — a mobile client for OpenCode. Dynamic model catalogue, sessions, and provider management through the connected OpenCode server.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js --dev",
+    "build:icons": "node scripts/make-icons.mjs"
+  },
+  "bin": {
+    "mobcode": "./server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/cli": "8.6.0",
+    "@capacitor/clipboard": "8.0.1",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/network": "8.0.1",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/share": "8.0.3",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.4"
+  }
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <title>Mobcode</title>
+  <meta name="description" content="Mobile client for OpenCode — dynamic model catalogue, sessions, and provider management." />
+  <meta name="theme-color" content="#0b0e14" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mobcode" />
+  <link rel="stylesheet" href="/app/css/app.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- app bar -->
+    <header class="appbar" id="appbar" hidden>
+      <button class="appbar-btn" id="btn-back" aria-label="Back" hidden>
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15.5 19 8.5 12 15.5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="appbar-title" id="appbar-title">Mobcode</div>
+      <div class="appbar-actions" id="appbar-actions"></div>
+    </header>
+
+    <!-- views mount here -->
+    <main id="view" class="view"></main>
+
+    <!-- bottom tab bar -->
+    <nav class="tabbar" id="tabbar" hidden>
+      <button class="tab" data-tab="home" aria-label="Sessions">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M21 11.5 12 4.5 3 11.5V20h6v-5h6v5h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>Chats</span>
+      </button>
+      <button class="tab tab-primary" data-tab="new" aria-label="New chat">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span>New</span>
+      </button>
+      <button class="tab" data-tab="providers" aria-label="Providers">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12l6-6c2.5 2.4 3.2 6 1.8 9L12 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.6" fill="currentColor"/></svg>
+        <span>Providers</span>
+      </button>
+      <button class="tab" data-tab="settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div id="sheet-root"></div>
+    <div id="toast-root"></div>
+    <div id="modal-root"></div>
+    <div id="live-region" class="sr-only" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="/app/js/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mobcode network security (release + base).
+
+  HTTPS only: cleartext (HTTP) is rejected system-wide. The connection screen
+  will actively refuse http:// URLs except on debug builds (see
+  src/debug/res/xml/network_security_config.xml), where localhost and the
+  emulator loopback 10.0.2.2 are allowed for local development.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

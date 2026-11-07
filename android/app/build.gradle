@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+
+import java.util.Properties
+
+android {
+    namespace = "com.mobcode.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.mobcode.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+
+    signingConfigs {
+        // Upload keystore lives OUTSIDE version control (see android/keystore.properties,
+        // which is gitignored). Builds are unsigned if the file is absent.
+        if (rootProject.file('keystore.properties').exists()) {
+            def props = new Properties()
+            def pf = rootProject.file('keystore.properties')
+            pf.withInputStream { props.load(it) }
+            // storeFile resolved relative to the app module directory
+            def kf = file(props['MOBCODE_KEYSTORE_PATH'] ?: 'mobcode-upload.keystore')
+            if (kf.exists()) {
+                mobcodeUpload {
+                    storeFile kf
+                    storePassword props['MOBCODE_KEYSTORE_PASS']
+                    keyAlias props['MOBCODE_KEY_ALIAS']
+                    keyPassword props['MOBCODE_KEY_PASS']
+                }
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (signingConfigs.hasProperty('mobcodeUpload')) {
+                signingConfig signingConfigs.mobcodeUpload
+            } else {
+                logger.warn('MOBCODE RELEASE BUILDER: no keystore.properties found; release build will be UNSIGNED (Play upload will fail).')
+            }
+        }
+        debug {
+            // debug builds use the default generated debug keystore
+        }
+    }
+
+    lint {
+        // Do not let lint warnings (e.g. translation locales) fail APK builds.
+        abortOnError false
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation "androidx.security:security-crypto:1.1.0"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

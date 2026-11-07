@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="0.5" stop-color="#5b48d3"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <rect width="2732" height="2732" fill="#0b0e14"/>
+  <g transform="translate(1126,962) scale(0.75)">
+    <rect x="0" y="0" width="480" height="480" rx="112" fill="url(#g)"/>
+    <path d="M96 112h288a52 52 0 0 1 52 52v144a52 52 0 0 1-52 52H252l-88 64v-64a52 52 0 0 1-52-52V164a52 52 0 0 1 52-52z"
+          fill="#0b0e14" fill-opacity="0.92"/>
+    <path d="M152 180h216M152 232h152" stroke="#9fe8dd" stroke-width="30" stroke-linecap="round" fill="none"/>
+    <circle cx="416" cy="416" r="60" fill="#2dd4bf"/>
+    <path d="M416 376v80M376 416h80" stroke="#0b0e14" stroke-width="26" stroke-linecap="round"/>
+  </g>
+  <text x="1366" y="1680" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="150" font-weight="bold" fill="#e8ebf4" letter-spacing="2">Mobcode</text>
+  <text x="1366" y="1790" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="58" fill="#727c92" letter-spacing="6">YOUR CODE. YOUR AGENT. ANYWHERE.</text>
+</svg>

@@ -1,0 +1,38 @@
+# Mobcode — root ignore
+node_modules/
+www/
+dist/
+mobcode.log
+mobcode-run.log
+
+# runtime companion config — server.js writes the OpenCode password here
+mobcode.server.json
+*.log
+.env
+.env.*
+
+# Android build artifacts (copies of original template rules)
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/app/src/main/assets/capacitor.plugins.json
+
+# Android signing secrets — NEVER commit these
+android/keystore.properties
+android/mobcode-upload.keystore
+android/keystores/
+android/app/keystores/
+*.jks
+*.keystore
+!android/app/debug.keystore
+keystore.properties
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# downloads cache staged for builds
+/tmp/opencode
+
+# local sqlite/leveldb from npm? none used. keep tidy:
+npm-debug.log*
