@@ -70,7 +70,11 @@ const VERSION = "1.1.0";
 const flagTarget = arg("target", "") || arg("open", "") || "";
 if (typeof flagTarget === "string") applyTarget(flagTarget, true);
 if (typeof arg("directory", "") === "string") state.directory = arg("directory", "").trim();
-state.password = "".concat(arg("password", "") || "", process.env.OPENCODE_SERVER_PASSWORD || "");
+// flag wins, env is fallback — never both: concatenating them (previous
+// .concat behaviour) doubled the password whenever --password and the exported
+// engine var coexisted (production start-prod.sh wiring) and the engine then
+// rejected every proxied request with 401.
+state.password = String(arg("password", "") || "") || String(process.env.OPENCODE_SERVER_PASSWORD || "");
 
 // 2) load saved config (not overriding explicit flags/env)
 if (arg("no-persist") !== true) {
