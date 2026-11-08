@@ -13,10 +13,10 @@
 export const MOBCODE_VERSION = "1.1.0";
 
 /** Server URL set at build time from the verified Render deployment. */
-export const PRODUCTION_API_BASE_URL = "";
+export const PRODUCTION_API_BASE_URL = "https://mobcode.onrender.com";
 
 /** Allow a developer-only server override from the Connect screen / localStorage. */
-export const ALLOW_DEV_SERVER_OVERRIDE = true;
+export const ALLOW_DEV_SERVER_OVERRIDE = false;
 
 /** Exercise the resolved config. */
 export function resolveApiBase({ secureProfileUrl = "" } = {}) {
