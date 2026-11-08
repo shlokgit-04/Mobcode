@@ -12,9 +12,12 @@ ARG OPENCODE_VERSION=2.2.5
 # Engine + tool deps. bash is required by the opencode installer.
 RUN apk add --no-cache curl bash git ca-certificates tini
 
-# OpenCode engine (official installer, pinned, PATH-adjusted)
+# OpenCode engine (official installer, pinned, PATH-adjusted).
+# The installer is a Bash script (`set -euo pipefail`); Alpine's BusyBox `sh`
+# chokes on it (line 397 taps $SHELL, unset in builds). Run it via bash and
+# export SHELL explicitly: bash only emulates $SHELL on login shells.
 RUN curl -fsSL https://opencode.ai/v2/install -o /tmp/oc-install \
-    && sh /tmp/oc-install --version "$OPENCODE_VERSION" --no-modify-path \
+    && SHELL=/bin/bash bash /tmp/oc-install --version "$OPENCODE_VERSION" --no-modify-path \
     && rm -f /tmp/oc-install
 ENV PATH=/root/.opencode/bin:$PATH
 
